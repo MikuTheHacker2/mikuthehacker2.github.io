@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Illuminati - Authorized Access</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #d4af37; /* Signature gold tone */
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Rotating icon styles and animations */
+        .illuminati-icon {
+            position: absolute;
+            opacity: 0.6;
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+        }
+
+        .eye-icon {
+            width: 80px;
+            height: 138px;
+        }
+
+        .pyramid-icon {
+            width: 100px;
+            height: 100px;
+        }
+
+        /* Varied speeds and sizes for visual depth */
+        .icon-1 { top: 10%; left: 15%; animation-duration: 25s; }
+        .icon-2 { top: 25%; right: 10%; animation-duration: 18s; }
+        .icon-3 { bottom: 20%; left: 20%; animation-duration: 30s; }
+        .icon-4 { bottom: 15%; right: 25%; animation-duration: 22s; }
+        .icon-5 { top: 45%; left: 5%; animation-duration: 15s; width: 60px; height: 104px; }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Central element */
+        .central-element {
+            z-index: 1;
+            text-align: center;
+        }
+
+        .central-triangle {
+            width: 0;
+            height: 0;
+            border-left: 180px solid transparent;
+            border-right: 180px solid transparent;
+            border-bottom: 312px solid #d4af37;
+            position: relative;
+            margin: 0 auto 30px;
+            animation: slowRotate 60s linear infinite;
+        }
+
+        .central-eye {
+            width: 70px;
+            height: 70px;
+            background-color: #0a0a0a;
+            border-radius: 50%;
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .central-eye::after {
+            content: '';
+            width: 35px;
+            height: 35px;
+            background-color: #d4af37;
+            border-radius: 50%;
+        }
+
+        @keyframes slowRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        h1 {
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px #d4af37;
+        }
+
+        .access-button {
+            background-color: transparent;
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            padding: 18px 35px;
+            font-size: 20px;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        .access-button:hover {
+            background-color: #d4af37;
+            color: #0a0a0a;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.8);
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 12px;
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+        /* Integrated SVGs (no external files needed) */
+        svg {
+            fill: #d4af37;
+        }
+    </style>
+</head>
+<body>
+    <!-- Scattered rotating icons -->
+    <div class="illuminati-icon eye-icon icon-1">
+        <svg viewBox="0 0 50 85">
+            <path d="M25 0 L0 85 L50 85 Z M25 30 C20 30 15 35 15 40 C15 45 20 50 25 50 C30 50 35 45 35 40 C35 35 30 30 25 30 Z"/>
+        </svg>
+    </div>
+    <div class="illuminati-icon pyramid-icon icon-2">
+        <svg viewBox="0 0 60 60">
+            <path d="M30 0 L0 60 L60 60 Z M30 15 L15 45 L45 45 Z"/>
+        </svg>
+    </div>
+    <div class="illuminati-icon eye-icon icon-3">
+        <svg viewBox="0 0 50 85">
+            <path d="M25 0 L0 85 L50 85 Z M25 30 C20 30 15 35 15 40 C15 45 20 50 25 50 C30 50 35 45 35 40 C35 35 30 30 25 30 Z"/>
+        </svg>
+    </div>
+    <div class="illuminati-icon pyramid-icon icon-4">
+        <svg viewBox="0 0 60 60">
+            <path d="M30 0 L0 60 L60 60 Z M30 15 L15 45 L45 45 Z"/>
+        </svg>
+    </div>
+    <div class="illuminati-icon eye-icon icon-5">
+        <svg viewBox="0 0 50 85">
+            <path d="M25 0 L0 85 L50 85 Z M25 30 C20 30 15 35 15 40 C15 45 20 50 25 50 C30 50 35 45 35 40 C35 35 30 30 25 30 Z"/>
+        </svg>
+    </div>
+
+    <!-- Central content -->
+    <div class="central-element">
+        <div class="central-triangle">
+            <div class="central-eye"></div>
+        </div>
+        <h1>Authorized Access Only</h1>
+        <button class="access-button" onclick="window.location.href='https://www.nsa.gov'">Enter Site</button>
+    </div>
+
+    <footer>• Ordo Ab Chao •</footer>
+</body>
+</html>
