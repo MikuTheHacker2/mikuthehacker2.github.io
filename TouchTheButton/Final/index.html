@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #fff;
+            color: #000;
+            transition: all 0.5s ease;
+        }
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 90%;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        p {
+            font-size: 1.2em;
+        }
+        .click-counter {
+            font-weight: bold;
+            color: #ff4500;
+            margin: 15px 0;
+            font-size: 1.3em;
+        }
+        .mover {
+            position: absolute;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .popup-content {
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+        .popup-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+        }
+        .close-btn {
+            margin-top: 15px;
+            padding: 8px 16px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 onclick="changeEverything()">¡YOU WON A PRIZE!</h1>
+        <p>Click the button <b>100,000 times</b> to unlock the reward!</p>
+        <div class="click-counter">Clicks: <span id="clickCount">0</span>/100000</div>
+        <button class="mover" id="button">Claim prize</button>
+    </div>
+
+    <div class="popup" id="rewardPopup">
+        <div class="popup-content" id="popupContent">
+            <img id="rewardImage" src="" alt="Reward">
+            <button class="close-btn" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let button = document.getElementById('button');
+        let body = document.body;
+        let clickCount = 0;
+        let countDisplay = document.getElementById('clickCount');
+        let rewardPopup = document.getElementById('rewardPopup');
+        let rewardImage = document.getElementById('rewardImage');
+        
+        let colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+        let hoverTexts = [
+            "Oops, almost!",
+            "You sure you wanna keep going?",
+            "Just a little more...",
+            "You're so close!",
+            "Aren't you tired yet?",
+            "Haha, almost there!"
+        ];
+        // Your provided troll image (base64)
+        const trollImage = "data:image/jpeg;base64,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";
+        // Your provided cat image URL (note: system says it's not supported)
+        const catImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT00oue5Tfe_jvSXw5CMMJ_a3L46hCM0rdqLNle2U-mQw&s=10";
+
+        // Button moves when mouse gets near
+        button.addEventListener('mouseover', () => {
+            if(clickCount < 100000) {
+                let x = Math.random() * (window.innerWidth - button.offsetWidth);
+                let y = Math.random() * (window.innerHeight - button.offsetHeight);
+                button.style.left = x + 'px';
+                button.style.top = y + 'px';
+                button.textContent = hoverTexts[Math.floor(Math.random() * hoverTexts.length)];
+            }
+        });
+
+        // Track button clicks
+        button.addEventListener('click', () => {
+            clickCount++;
+            countDisplay.textContent = clickCount;
+            button.textContent = `Click again! (${clickCount}/100000)`;
+
+            // Check if target is reached
+            if(clickCount >= 100000) {
+                let randomChance = Math.random();
+                if(randomChance <= 0.01) {
+                    // 1% Cat photo (with fallback message if it fails to load)
+                    rewardImage.src = catImage;
+                    rewardImage.alt = "Cute Cat!";
+                    rewardImage.onerror = () => {
+                        rewardImage.src = "https://picsum.photos/seed/catfallback/600/400";
+                        document.querySelector('#popupContent').insertAdjacentHTML('afterbegin', '<h2 style="color:white;">YES! ...Almost! Here\'s a cat fallback!</h2>');
+                    };
+                    document.querySelector('#popupContent').insertAdjacentHTML('afterbegin', '<h2 style="color:white;">YES! YOU GOT THE CAT!</h2>');
+                } else {
+                    // 99% Troll
+                    rewardImage.src = trollImage;
+                    rewardImage.alt = "Troll!";
+                    document.querySelector('#popupContent').insertAdjacentHTML('afterbegin', '<h2 style="color:white;">HAHA! TROLLED AGAIN!</h2>');
+                }
+                rewardPopup.style.display = 'flex';
+                button.style.display = 'none';
+            }
+        });
+
+        // Clicking the title changes colors and text
+        function changeEverything() {
+            let randomColor = colors[Math.floor(Math.random() * colors.length)];
+            body.style.backgroundColor = randomColor;
+            body.style.color = randomColor === '#000' ? '#fff' : '#000';
+            document.querySelector('h1').textContent = "This title's a troll too!";
+            document.querySelector('p').textContent = "Why are you still interacting?";
+        }
+
+        // Close popup function
+        function closePopup() {
+            rewardPopup.style.display = 'none';
+            location.reload(); // Reset everything
+        }
+    </script>
+</body>
+</html>
+tml
