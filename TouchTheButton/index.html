@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #fff;
+            color: #000;
+            transition: all 0.5s ease;
+        }
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 90%;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        p {
+            font-size: 1.5em;
+        }
+        .mover {
+            position: absolute;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 onclick="changeEverything()">¡YOU WON A PRIZE!</h1>
+        <p>Click the button below to claim it</p>
+        <button class="mover" id="button">Claim prize</button>
+    </div>
+
+    <script>
+        let button = document.getElementById('button');
+        let body = document.body;
+        let colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+        let texts = [
+            "Oops, almost!",
+            "You sure you wanna claim it?",
+            "Just a little more...",
+            "You're so close!",
+            "Aren't you tired yet?",
+            "Haha, gotcha!"
+        ];
+
+        // Button moves when mouse gets near
+        button.addEventListener('mouseover', () => {
+            let x = Math.random() * (window.innerWidth - button.offsetWidth);
+            let y = Math.random() * (window.innerHeight - button.offsetHeight);
+            button.style.left = x + 'px';
+            button.style.top = y + 'px';
+            button.textContent = texts[Math.floor(Math.random() * texts.length)];
+        });
+
+        // Clicking the title changes colors and text
+        function changeEverything() {
+            let randomColor = colors[Math.floor(Math.random() * colors.length)];
+            body.style.backgroundColor = randomColor;
+            body.style.color = randomColor === '#000' ? '#fff' : '#000';
+            document.querySelector('h1').textContent = "This title's a troll too!";
+            document.querySelector('p').textContent = "Why are you still interacting?";
+        }
+
+        // Final message pops up after 10 seconds
+        setTimeout(() => {
+            alert("Haha! There's no prize, you totally fell for it 😉 Come back anytime for another troll!");
+            body.style.backgroundColor = '#fff';
+            body.style.color = '#000';
+            document.querySelector('h1').textContent = "Troll over!";
+            document.querySelector('p').textContent = "You can close the tab now lol";
+            button.style.display = 'none';
+        }, 10000);
+    </script>
+</body>
+</html>
