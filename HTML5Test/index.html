@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML5 Benchmark</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#111;
+    color:white;
+    text-align:center;
+}
+header{
+    padding:20px;
+    font-size:26px;
+    background:linear-gradient(90deg,#ff512f,#dd2476);
+}
+button{
+    padding:10px 18px;
+    font-size:16px;
+    margin:6px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    color:white;
+}
+#progressBar{
+    width:80%;
+    height:22px;
+    margin:20px auto;
+    background:#333;
+    border-radius:20px;
+    overflow:hidden;
+}
+#progress{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#00ff99,#00ccff);
+}
+#score{
+    font-size:24px;
+    margin-top:15px;
+}
+canvas{ display:none; }
+</style>
+</head>
+
+<body>
+
+<header>🚀 HTML5 Benchmark</header>
+
+<div>
+    <button onclick="startBenchmark(100)">100 Tests</button>
+    <button onclick="startBenchmark(500)">500 Tests</button>
+    <button onclick="startBenchmark(1000)">1000 Tests</button>
+</div>
+
+<div id="progressBar"><div id="progress"></div></div>
+<div id="status">Select number of tests</div>
+<div id="score"></div>
+
+<canvas id="canvas" width="400" height="200"></canvas>
+
+<script>
+let totalTests = 0;
+let currentTest = 0;
+let totalScore = 0;
+
+function updateProgressBar(){
+    document.getElementById("progress").style.width =
+        (currentTest / totalTests) * 100 + "%";
+}
+
+function mathPerformanceTest(){
+    let start = performance.now();
+    let result = 0;
+    for(let i=0;i<20000;i++){
+        result += Math.sqrt(i) * Math.sin(i);
+    }
+    return 1000 / (performance.now() - start);
+}
+
+function domPerformanceTest(){
+    let start = performance.now();
+    let tempDiv = document.createElement("div");
+    document.body.appendChild(tempDiv);
+    for(let i=0;i<200;i++){
+        tempDiv.innerHTML = i;
+    }
+    document.body.removeChild(tempDiv);
+    return 1000 / (performance.now() - start);
+}
+
+function canvasPerformanceTest(){
+    let canvas = document.getElementById("canvas");
+    let ctx = canvas.getContext("2d");
+    let start = performance.now();
+    for(let i=0;i<1000;i++){
+        ctx.fillRect(Math.random()*400, Math.random()*200, 2, 2);
+    }
+    return 1000 / (performance.now() - start);
+}
+
+function runSingleTest(){
+    let testType = currentTest % 3;
+    let score = 0;
+
+    if(testType === 0) score = mathPerformanceTest();
+    if(testType === 1) score = domPerformanceTest();
+    if(testType === 2) score = canvasPerformanceTest();
+
+    totalScore += score;
+}
+
+function startBenchmark(amount){
+    totalTests = amount;
+    currentTest = 0;
+    totalScore = 0;
+
+    document.getElementById("score").innerHTML = "";
+    document.getElementById("status").innerHTML = "Starting benchmark...";
+    document.getElementById("progress").style.width = "0%";
+
+    setTimeout(runLoop, 50);
+}
+
+function runLoop(){
+    if(currentTest < totalTests){
+        runSingleTest();
+        currentTest++;
+        updateProgressBar();
+
+        document.getElementById("status").innerHTML =
+            "Running test " + currentTest + " / " + totalTests;
+
+        setTimeout(runLoop, 1); // prevents freezing
+    } else {
+        finishBenchmark();
+    }
+}
+
+function finishBenchmark(){
+    let finalScore = Math.round(totalScore * 10);
+
+    document.getElementById("status").innerHTML = "Benchmark completed ✅";
+    document.getElementById("score").innerHTML =
+        "Final Score: " + finalScore;
+}
+</script>
+
+</body>
+  </html>
