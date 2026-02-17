@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>3D Benchmark</title>
+<style>
+    body { margin: 0; overflow: hidden; font-family: monospace; }
+    #panel {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: rgba(0,0,0,0.8);
+        color: #00ff90;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        min-width: 240px;
+        line-height: 1.6em;
+        z-index: 10;
+    }
+    button {
+        margin-top: 10px;
+        padding: 6px 10px;
+        background: #00ff90;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div id="panel">
+    FPS: <span id="fps">0</span><br>
+    Objects: <span id="objects">0</span><br>
+    Score: <span id="score">0</span><br>
+    GPU: <span id="gpu">Detecting...</span><br>
+    <button onclick="startBenchmark()">Start Benchmark</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+// ===== SCENE SETUP =====
+let scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111111); // dark background
+
+let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+let renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+camera.position.z = 150;
+
+// ===== LIGHTING =====
+scene.add(new THREE.AmbientLight(0x555555));
+const pointLight = new THREE.PointLight(0xffffff, 2);
+pointLight.position.set(50, 50, 50);
+scene.add(pointLight);
+
+// ===== GPU INFO =====
+const gl = renderer.getContext();
+const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+if (debugInfo) {
+    document.getElementById("gpu").textContent =
+        gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+} else {
+    document.getElementById("gpu").textContent = "Not available";
+}
+
+// ===== BENCHMARK VARIABLES =====
+let objects = [];
+let running = false;
+let frameCount = 0;
+let lastTime = performance.now();
+let score = 0;
+
+// ===== ADD OBJECTS FUNCTION =====
+function addObjects(count) {
+    const geometry = new THREE.BoxGeometry(2,2,2);
+    for (let i = 0; i < count; i++) {
+        const material = new THREE.MeshStandardMaterial({
+            color: Math.random() * 0xffffff,
+            metalness: 0.5,
+            roughness: 0.5
+        });
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.x = (Math.random() - 0.5) * 400;
+        cube.position.y = (Math.random() - 0.5) * 400;
+        cube.position.z = (Math.random() - 0.5) * 400;
+        scene.add(cube);
+        objects.push(cube);
+    }
+    document.getElementById("objects").textContent = objects.length;
+}
+
+// ===== START BENCHMARK =====
+function startBenchmark() {
+    if (running) return;
+    running = true;
+    score = 0;
+    objects = [];
+    scene.clear();
+    scene.add(pointLight);
+    scene.add(new THREE.AmbientLight(0x555555));
+
+    // Add objects gradually
+    let interval = setInterval(() => {
+        addObjects(200);
+        if (objects.length > 5000) clearInterval(interval);
+    }, 500);
+}
+
+// ===== ANIMATION LOOP =====
+function animate() {
+    requestAnimationFrame(animate);
+
+    if (running) {
+        objects.forEach(cube => {
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+        });
+        // slow camera movement
+        camera.position.x = Math.sin(performance.now()/3000)*150;
+        camera.position.y = Math.sin(performance.now()/4000)*100;
+        camera.lookAt(0,0,0);
+    }
+
+    // FPS counting
+    frameCount++;
+    const now = performance.now();
+    if (now >= lastTime + 1000) {
+        document.getElementById("fps").textContent = frameCount;
+        score += frameCount;
+        document.getElementById("score").textContent = score;
+        frameCount = 0;
+        lastTime = now;
+    }
+
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// ===== HANDLE WINDOW RESIZE =====
+window.addEventListener("resize", () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+});
+</script>
+
+</body>
+  </html>
